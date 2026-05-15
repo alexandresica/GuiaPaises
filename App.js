@@ -45,7 +45,7 @@ export default function App() {
       setCarregando(false);
     }
   }
-  
+
   function RngIso2Codigo() {
     const listaCodigos = Object.keys(countries.getAlpha2Codes());
     const indexRng = Math.floor(Math.random() * listaCodigos.length);
@@ -140,6 +140,13 @@ export default function App() {
               onPress={() => Linking.openURL(pais.maps.googleMaps)}
             >
               <Text style={styles.textoBotaoMapa}>Abrir no Google Maps</Text>
+            </TouchableOpacity>,
+
+            <TouchableOpacity
+              style={styles.botaoWiki}
+              onPress={() => Linking.openURL(`https://pt.wikipedia.org/wiki/${paisWiki}`)}
+            >
+              <Text style={styles.textoBotaoMapa}>Abrir artigo Wiki</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -243,6 +250,15 @@ const styles = StyleSheet.create({
     color: '#334155',
   },
   botaoMapa: {
+    marginTop: 20,
+    backgroundColor: '#16A34A',
+    padding: 13,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+
+  botaoWiki: {
     marginTop: 20,
     backgroundColor: '#16A34A',
     padding: 13,
