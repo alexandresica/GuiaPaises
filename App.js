@@ -9,7 +9,9 @@ import {
   StyleSheet,
   ScrollView,
   Linking,
+  SafeAreaView,
 } from 'react-native';
+
 
 export default function App() {
   const [paisDigitado, setPaisDigitado] = useState('');
@@ -42,6 +44,7 @@ export default function App() {
     } catch (error) {
       setErro('Não foi possível encontrar esse país. Tente em inglês, por exemplo: brazil, japan, france.');
     } finally {
+      setPaisDigitado('');
       setCarregando(false);
     }
   }
@@ -71,6 +74,7 @@ export default function App() {
     } catch (error) {
       setErro('Não foi possível encontrar um país. Tente em novamente.');
     } finally {
+      setPaisDigitado('');
       setCarregando(false);
     }
   }
@@ -91,67 +95,70 @@ export default function App() {
       .map((moeda) => `${moeda.name} (${moeda.symbol || 'sem símbolo'})`)
       .join(', ');
   }
+  
  
   
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.titulo}>Guia de Países</Text>
-      <Text style={styles.subtitulo}>Busque um país e veja seus dados reais</Text>
+        <Text style={styles.titulo}>Guia de Países</Text>
+        <Text style={styles.subtitulo}>Busque um país e veja seus dados reais</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Digite em inglês. Ex: brazil"
-        value={paisDigitado}
-        onChangeText={setPaisDigitado}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Digite em inglês. Ex: brazil"
+          value={paisDigitado}
+          onChangeText={setPaisDigitado}
+        />
 
-      <TouchableOpacity style={styles.botao} onPress={buscarPais}>
-        <Text style={styles.textoBotao}>Buscar País</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.botao} onPress={buscarPais}>
+          <Text style={styles.textoBotao}>Buscar País</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.botaoRng} onPress={RngPais}>
-        <Text style={styles.textoBotao}>Selecionar um País aleatorio</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.botaoRng} onPress={RngPais}>
+          <Text style={styles.textoBotao}>Selecionar um País aleatorio</Text>
+        </TouchableOpacity>
 
-      {carregando && <ActivityIndicator size="large" color="#2563EB" style={styles.loading} />}
+        {carregando && <ActivityIndicator size="large" color="#2563EB" style={styles.loading} />}
 
-      {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+        {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
 
-      {pais && (
-        <View style={styles.card}>
-          <Image source={{ uri: pais.flags.png }} style={styles.bandeira} />
+        {pais && (
+          <View style={styles.card}>
+            <Image source={{ uri: pais.flags.png }} style={styles.bandeira} />
 
-          <Text style={styles.nomePais}>{pais.name.common}</Text>
-          <Text style={styles.nomeOficial}>{pais.name.official}</Text>
+            <Text style={styles.nomePais}>{pais.name.common}</Text>
+            <Text style={styles.nomeOficial}>{pais.name.official}</Text>
 
-          <View style={styles.infoBox}>
-            <Text style={styles.info}>Capital: {pais.capital ? pais.capital[0] : 'Não informado'}</Text>
-            <Text style={styles.info}>Região: {pais.region}</Text>
-            <Text style={styles.info}>Sub-região: {pais.subregion || 'Não informado'}</Text>
-            <Text style={styles.info}>População: {formatarNumero(pais.population)}</Text>
-            <Text style={styles.info}>Idiomas: {obterIdiomas()}</Text>
-            <Text style={styles.info}>Moedas: {obterMoedas()}</Text>
-          </View>
+            <View style={styles.infoBox}>
+              <Text style={styles.info}>Capital: {pais.capital ? pais.capital[0] : 'Não informado'}</Text>
+              <Text style={styles.info}>Região: {pais.region}</Text>
+              <Text style={styles.info}>Sub-região: {pais.subregion || 'Não informado'}</Text>
+              <Text style={styles.info}>População: {formatarNumero(pais.population)}</Text>
+              <Text style={styles.info}>Idiomas: {obterIdiomas()}</Text>
+              <Text style={styles.info}>Moedas: {obterMoedas()}</Text>
+            </View>
 
-          {pais.maps && pais.maps.googleMaps && (
-            <TouchableOpacity
+            {pais.maps && pais.maps.googleMaps && (
+              <TouchableOpacity
               style={styles.botaoMapa}
               onPress={() => Linking.openURL(pais.maps.googleMaps)}
-            >
-              <Text style={styles.textoBotaoMapa}>Abrir no Google Maps</Text>
-            </TouchableOpacity>,
-
-            <TouchableOpacity
+              >
+                <Text style={styles.textoBotaoMapa}>Abrir no Google Maps</Text>
+              </TouchableOpacity>
+            )}
+            
+            {pais.name.common && (
+              <TouchableOpacity
               style={styles.botaoWiki}
-              onPress={() => Linking.openURL(`https://pt.wikipedia.org/wiki/${paisWiki}`)}
-            >
-              <Text style={styles.textoBotaoMapa}>Abrir artigo Wiki</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </ScrollView>
+              onPress={() => Linking.openURL(`https://pt.wikipedia.org/wiki/${pais.name.common}`)}
+              >
+                <Text style={styles.textoBotaoMapa}>Abrir artigo Wiki</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      </ScrollView>
   );
 }
 
@@ -260,6 +267,7 @@ const styles = StyleSheet.create({
 
   botaoWiki: {
     marginTop: 20,
+    marginBottom: 15,
     backgroundColor: '#16A34A',
     padding: 13,
     borderRadius: 10,
